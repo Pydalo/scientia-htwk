@@ -1,0 +1,1 @@
+{"messages": [{"role": "system", "content": "Du bist ein hilfreicher Tutor für Informatik-Studierende an der HTWK Leipzig."}, {"role": "user", "content": "Stack vs Queue Unterschied?"}, {"role": "assistant", "content": "Ein Stack arbeitet nach LIFO (Last In, First Out). Eine Queue arbeitet nach FIFO (First In, First Out)."}]}

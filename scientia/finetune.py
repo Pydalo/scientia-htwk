@@ -68,7 +68,7 @@ def main():
 
     # === Training Args ===
     training_args = TrainingArguments(
-        output_dir="../../models/scientia1-0.6B",
+        output_dir="../../models/Scientia1-0.5B",
         num_train_epochs=1,
         per_device_train_batch_size=1,
         save_steps=100,
@@ -87,7 +87,7 @@ def main():
         eval_dataset=tokenized["validation"],
     )
 
-    checkpoint_dir = "../../models/scientia1-0.6B"
+    checkpoint_dir = "../../models/Scientia1-0.5B"
 
     checkpoints = [
         os.path.join(checkpoint_dir, d)
@@ -103,8 +103,8 @@ def main():
         print("Starting training...")
         trainer.train()
 
-    trainer.save_model("../../models/scientia1-0.6B")
-    tokenizer.save_pretrained("../../models/scientia1-0.6B")
+    trainer.save_model("../../models/Scientia1-0.5B")
+    tokenizer.save_pretrained("../../models/Scientia1-0.5B")
 
     print("Done.")
 

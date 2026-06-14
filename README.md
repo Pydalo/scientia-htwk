@@ -28,8 +28,7 @@
     + Parameter: `400 M`
     + Open LLM Leaderboard: `12 P`
 
-### 3 Packages:
-
+## 3 Packages:
 We are use `PIP` as a library manager and run the project on a **local virtual environment**
 That are all packages installed:
 

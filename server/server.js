@@ -4,7 +4,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import config from "./config.js";
 
-// __dirname-Ersatz für ES-Module (wird für den Pfad zum public-Ordner benötigt)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

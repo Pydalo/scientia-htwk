@@ -79,17 +79,29 @@ async function send() {
             throw new Error(await response.text());
         }
 
-        const data = await response.json();
-        const answer = data?.answer;
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
 
-        if (typeof answer !== "string") {
-            throw new Error("Ungültige Antwort vom Backend.");
+        let fullText = "";
+
+        const div = document.createElement("div");
+        div.classList.add("msg", "bot");
+        chatContainer.appendChild(div);
+
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            fullText += chunk;
+
+            const html = marked.parse(fullText);
+            div.innerHTML = DOMPurify.sanitize(html);
         }
 
-        history.push({ role: "assistant", content: answer });
-        if (history.length > 30) history.shift();
+        history.push({ role: "assistant", content: fullText });
 
-        renderMessage("assistant", answer);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
 
     } catch (err) {
         console.error("Fehler:", err);

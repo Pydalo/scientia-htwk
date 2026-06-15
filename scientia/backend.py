@@ -1,14 +1,24 @@
-from flask import Flask, request
-from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
+from flask import Flask, request, Response
+from transformers import AutoTokenizer, AutoModelForCausalLM, TextIteratorStreamer
+import threading
 from waitress import serve
 
 app = Flask(__name__)
 
-
-path = "../../models/Scientia1-0.5B"
+path = "../../models/Qwen/Qwen3-4B-Instruct-2507"
 
 tokenizer = AutoTokenizer.from_pretrained(path)
-model = AutoModelForCausalLM.from_pretrained(path)
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
+model = AutoModelForCausalLM.from_pretrained(
+    path,
+    torch_dtype=torch.float16 if device == "cuda" else torch.float32
+).to(device)
+
+model.eval()
+
 
 @app.post("/chat")
 def chat():
@@ -17,17 +27,14 @@ def chat():
     if not data or "messages" not in data:
         return {"error": "invalid request"}, 400
 
-    messages = data["messages"]
     messages = [
-        m for m in messages
-        if isinstance(m, dict)
-        and "role" in m
-        and "content" in m
+        m for m in data["messages"]
+        if isinstance(m, dict) and "role" in m and "content" in m
     ]
 
     system = {
         "role": "system",
-        "content": "Du bist Scientia, ein KI-Tutor für Studierende der HTWK Leipzig. Antworte auf Deutsch in Markdown."
+        "content": "Du bist Scientia, ein KI-Tutor der HTWK-Leipzig. Antworte auf Deutsch in Markdown. Sieze den Nutzer."
     }
 
     messages = [system] + messages[-12:]
@@ -38,21 +45,44 @@ def chat():
         add_generation_prompt=True
     )
 
-    inputs = tokenizer(text, return_tensors="pt")
+    inputs = tokenizer(text, return_tensors="pt").to(device)
 
-    outputs = model.generate(**inputs, max_new_tokens=300)
-
-    answer = tokenizer.decode(
-        outputs[0][inputs["input_ids"].shape[1]:],
+    streamer = TextIteratorStreamer(
+        tokenizer,
         skip_special_tokens=True
     )
 
-    if not isinstance(answer, str):
-        answer = ""
+    gen_kwargs = dict(
+        **inputs,
+        streamer=streamer,
+        do_sample=True,
+        temperature=0.6,
+        top_p=0.9,
+        max_new_tokens=300,
+        eos_token_id=tokenizer.eos_token_id,
+        pad_token_id=tokenizer.eos_token_id
+    )
 
-    return {"answer": answer}
+    thread = threading.Thread(
+        target=model.generate,
+        kwargs=gen_kwargs,
+        daemon=True
+    )
+    thread.start()
+
+    def generate():
+        for text in streamer:
+            if not text:
+                continue
+
+            if "Du bist Scientia" in text:
+                continue
+
+            yield text.encode("utf-8")
+
+    return Response(generate(), mimetype="text/plain", direct_passthrough=True)
+
 
 if __name__ == "__main__":
     print("Server started on port 5000 via Waitress WSGI")
     serve(app, host="127.0.0.1", port=5000, threads=4)
-    print("Server stopped")

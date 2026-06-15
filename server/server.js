@@ -43,20 +43,26 @@ fastify.register(fastifyStatic, {
 });
 
 fastify.post("/chat", async (request, reply) => {
-    const response = await fetch(
-        "http://127.0.0.1:5000/chat",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                messages: request.body.messages 
-            })
-        }
-    );
+    const response = await fetch("http://127.0.0.1:5000/chat", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            messages: request.body.messages
+        })
+    });
 
-    return await response.json();
+    if (!response.ok) {
+        const err = await response.text();
+        reply.code(500).send(err);
+        return;
+    }
+
+    reply.header("Content-Type", "text/plain");
+    reply.header("Transfer-Encoding", "chunked");
+
+    return reply.send(response.body);
 });
 
 const start = async () => {

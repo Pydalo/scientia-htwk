@@ -43,7 +43,6 @@ function renderMessage(role, text) {
     }
 
     chatContainer.appendChild(div);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
 // ---------- Send Message ----------
@@ -65,6 +64,7 @@ async function send() {
 
     try {
         petals.speed = 7;
+        petals.waving = 3;
         const response = await fetch("/chat", {
             method: "POST",
             headers: {
@@ -88,6 +88,13 @@ async function send() {
         div.classList.add("msg", "bot");
         chatContainer.appendChild(div);
 
+        const content = document.createElement("div");
+        div.appendChild(content);
+
+        const cursor = document.createElement("span");
+        cursor.className = "typing-cursor";
+        cursor.textContent = "▍";
+        content.appendChild(cursor);
         while (true) {
             const { value, done } = await reader.read();
             if (done) break;
@@ -95,9 +102,20 @@ async function send() {
             const chunk = decoder.decode(value, { stream: true });
             fullText += chunk;
 
-            const html = marked.parse(fullText);
-            div.innerHTML = DOMPurify.sanitize(html);
+           const html = marked.parse(fullText);
+            content.innerHTML = DOMPurify.sanitize(html);
+
+            const lastBlock = content.querySelector(":scope > *:last-child");
+
+            if (lastBlock) {
+                lastBlock.appendChild(cursor);
+            } else {
+                content.appendChild(cursor);
+            }
+            
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
+        cursor.remove();
 
         history.push({ role: "assistant", content: fullText });
 
@@ -108,6 +126,7 @@ async function send() {
         renderMessage("assistant", "Fehler beim Senden.");
     } finally {
         petals.speed = 1;
+        petals.waving = 0.1;
         isSending = false;
     }
 }

@@ -34,7 +34,7 @@ def chat():
 
     system = {
         "role": "system",
-        "content": "Du bist Scientia, ein KI-Tutor der HTWK-Leipzig. Antworte auf Deutsch in Markdown. Sieze den Nutzer."
+        "content": "Du bist Scientia, ein KI-Tutor der HTWK-Leipzig. Antworte auf Deutsch in Markdown. Spreche den Nutzer mit (Sie) an!!"
     }
 
     messages = [system] + messages[-12:]
@@ -58,7 +58,7 @@ def chat():
         do_sample=True,
         temperature=0.6,
         top_p=0.9,
-        max_new_tokens=300,
+        max_new_tokens=900,
         eos_token_id=tokenizer.eos_token_id,
         pad_token_id=tokenizer.eos_token_id
     )
@@ -75,7 +75,7 @@ def chat():
             if not text:
                 continue
 
-            if "Du bist Scientia" in text:
+            if system.get("content") in text:
                 continue
 
             yield text.encode("utf-8")

@@ -7,6 +7,7 @@ const backgroundCtx = background.getContext("2d");
 
 const petals = {
     speed: 1,
+    waving: 0.1 /*In %*/,
     size: 100,
     radius: 70,
     elements: [],
@@ -106,15 +107,26 @@ function draw() {
         const z =
             e.homeX * Math.sin(angle) +
             e.homeZ * Math.cos(angle);
+            
+        const dx = x;
+        const dy = e.homeY;
 
-        const y =
-            e.homeY +
-            Math.sin(t + e.phase) * 0.05;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        const nx = dx / dist;
+        const ny = dy / dist;
+
+        const wave =
+            Math.sin(t * 2 + e.phase + dist * 3) *
+            petals.waving *
+            0.15;
+
+        const xW = x + nx * wave;
+        const yW = e.homeY + ny * wave;
 
         return {
             color: e.color,
-            drawX: x,
-            drawY: y,
+            drawX: xW,
+            drawY: yW,
             drawZ: z
         };
     });

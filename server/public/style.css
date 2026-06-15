@@ -227,6 +227,24 @@ main {
     border-radius: 14px;
     white-space: pre-wrap;
     word-wrap: break-word;
+    display: flex;
+    flex-direction: row;
+}
+
+.msg p,
+.msg ul,
+.msg ol {
+  margin: 0;
+}
+
+.msg ul,
+.msg ol {
+  padding-left: 18px;
+}
+
+.msg pre {
+  margin: 0;
+  overflow-x: auto;
 }
 
 .user {
@@ -237,4 +255,28 @@ main {
 .bot {
     align-self: flex-start;
     background: rgba(0,255,200,0.10);
+}
+
+.msg.bot {
+  position: relative;
+}
+
+.msg hr {
+    border-top: 1px solid #00000017;
+}
+
+.msg strong {
+    font-weight: bolder;
+}
+.typing-cursor {
+  display: inline-block;
+  animation: blink 1s step-start infinite;
+  margin-left: 2px;
+  font-weight: bold;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
 }

@@ -3,6 +3,32 @@ import fastifyStatic from "@fastify/static";
 import path from "path";
 import { fileURLToPath } from "url";
 import config from "./config.js";
+import { spawn } from "child_process";
+
+function startPython() {
+    const py = spawn(
+        "..\\scientia\\.venv\\Scripts\\python.exe",
+        ["..\\scientia\\backend.py"],
+        {
+            cwd: "..\\scientia",
+            shell: true
+        }
+    );
+
+    py.stdout.on("data", (data) => {
+        console.log(`[PYTHON] ${data.toString()}`);
+    });
+
+    py.stderr.on("data", (data) => {
+        console.error(`[PYTHON ERROR] ${data.toString()}`);
+    });
+
+    py.on("close", (code) => {
+        console.log(`[PYTHON EXIT] Code ${code}`);
+    });
+}
+
+startPython();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,7 +44,7 @@ fastify.register(fastifyStatic, {
 
 fastify.post("/chat", async (request, reply) => {
     const response = await fetch(
-        "http://localhost:5000/chat",
+        "http://127.0.0.1:5000/chat",
         {
             method: "POST",
             headers: {

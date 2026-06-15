@@ -12,14 +12,25 @@ model = AutoModelForCausalLM.from_pretrained(path)
 
 @app.post("/chat")
 def chat():
-    messages = request.json["messages"]
+    data = request.get_json()
+
+    if not data or "messages" not in data:
+        return {"error": "invalid request"}, 400
+
+    messages = data["messages"]
+    messages = [
+        m for m in messages
+        if isinstance(m, dict)
+        and "role" in m
+        and "content" in m
+    ]
 
     system = {
         "role": "system",
         "content": "Du bist Scientia, ein KI-Tutor für Studierende der HTWK Leipzig. Antworte auf Deutsch in Markdown."
     }
 
-    messages = [system] + messages[-12:]  # limit context
+    messages = [system] + messages[-12:]
 
     text = tokenizer.apply_chat_template(
         messages,
@@ -35,6 +46,9 @@ def chat():
         outputs[0][inputs["input_ids"].shape[1]:],
         skip_special_tokens=True
     )
+
+    if not isinstance(answer, str):
+        answer = ""
 
     return {"answer": answer}
 

@@ -74,8 +74,8 @@ function drawAurora(t) {
         for (let x = 0; x <= backgroundWidth; x += 20) {
             const y =
                 backgroundHeight * 0.3 +
-                Math.sin(x * 0.003 + t + i) * 60 +
-                Math.sin(x * 0.001 + t * 0.5) * 40;
+                Math.sin(x * 0.003 + (t * 0.5) + i) * 60 +
+                Math.sin(x * 0.001 + (t * 0.5) * 0.5) * 40;
 
             backgroundCtx.lineTo(x, y);
         }

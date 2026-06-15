@@ -2,6 +2,9 @@ body {
     margin: 0;
     height: 100vh;
     overflow: hidden;
+
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
 }
 
 #background {
@@ -10,7 +13,16 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(#3c9613, 20%, rgb(0, 0, 0));
+    background: radial-gradient(#6e6e6e, 20%, rgb(0, 0, 0));
+    z-index: -3;
+}
+
+#flower {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     z-index: -2;
 }
 
@@ -20,7 +32,140 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    backdrop-filter: blur(4px);
-    background-color: rgba(255, 255, 255, 0.01); 
+    background-color: rgba(255, 255, 255, 0.01);
     z-index: -1;
+}
+
+main {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#chat {
+    background: linear-gradient(rgba(0, 0, 0, 0.192), rgba(0, 0, 0, 0.027), rgba(0, 0, 0, 0.192));
+    height: 90%;
+    width: 50%;
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    outline: 1px solid rgba(235, 235, 235, 0.349);
+    outline-offset: -2px;
+}
+
+#messages {
+    position: relative;
+    background: linear-gradient(rgba(0, 0, 0, 0.192), rgba(0, 0, 0, 0.027), rgba(0, 0, 0, 0.192));
+    height: calc(100% - 2 * 0.2%);
+    margin: 0.2%;
+    border-radius: 30px;
+    outline: 3px groove rgba(235, 235, 235, 0.295);
+    outline-offset: -2px;
+
+    display: flex;
+}
+
+#prompt-input {
+    position: absolute;
+    left: 2%;
+    right: 2%;
+    bottom: 2%;
+
+    display: flex;
+    align-items: center;
+
+    min-height: 70px;
+    padding: 12px 16px;
+
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(15px);
+
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+
+    box-sizing: border-box;
+}
+
+#prompt-input:focus-within {
+    border-color: rgba(255,255,255,0.5);
+    box-shadow:
+        0 0 20px rgba(255,255,255,0.08),
+        0 0 5px rgba(255,255,255,0.15);
+}
+
+#prompt-input {
+    transition:
+        height 0.15s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+#welcome-text { 
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    translate: -50% -80%;
+    font-style: oblique;
+}
+
+#prompt {
+    width: 100%;
+    min-height: 40px;
+    max-height: 150px;
+
+    overflow-y: hidden;
+
+    resize: none;
+    border: none;
+    outline: none;
+
+    background: transparent;
+    color: white;
+
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+#prompt::-webkit-scrollbar {
+    width: 8px;
+}
+
+#prompt::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#prompt::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 999px;
+}
+
+#prompt::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.35);
+}
+
+#prompt {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.25) transparent;
+}
+
+#send-button {
+    width: 42px;
+    height: 42px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.15);
+    color: white;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+#send-button:hover {
+    background: rgba(255,255,255,0.25);
+    transform: scale(1.05);
 }

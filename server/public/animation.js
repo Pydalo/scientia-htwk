@@ -152,7 +152,9 @@ function draw() {
         backgroundCtx.fill();
     });
 
-    requestAnimationFrame(draw);
+    setTimeout(() => {
+        requestAnimationFrame(draw)
+    }, 4);
 }
 
 function resize() {

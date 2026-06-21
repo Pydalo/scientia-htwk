@@ -15,6 +15,17 @@ function startPython() {
         }
     );
 
+    /*
+    LINUX::
+        const py = spawn(
+        "../scientia/.venv/bin/python",
+        ["../scientia/backend.py"],
+        {
+            cwd: "../scientia"
+        }
+        );
+    */
+
     py.stdout.on("data", (data) => {
         console.log(`[PYTHON] ${data.toString()}`);
     });

@@ -8,31 +8,44 @@ from datasets import load_dataset
 import torch
 import os
 
+"""
+poetos ji svenjar mi lingant ji lomea:
+
+flodea flosos woli hapant
+herisea veri sro sifte
+tulpas role les wisa it posant
+svenjar liso mi sifte
+
+svirea veri hi mi sifta
+andre antrophilasia boso esa mi aros:
+lo fari wihesia ranhetol
+svenjar bronetel mi myosa
+
+O svenja O svenjar
+wila ev ji masari masar
+sos giv wos smje compe gigase
+sos brone PALI JAREPAR
+"""
 
 def main():
     os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
 
-    # === Modell ===
     model_path = "../../models/Qwen2.5-0.5B-Instruct"
 
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     model = AutoModelForCausalLM.from_pretrained(model_path)
 
-    # wichtig für Training
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
     print(f"Training on: {device}")
-
-    # === Dataset ===
     dataset = load_dataset("json", data_files={
         "train": "data/train.jsonl",
         "validation": "data/val.jsonl"
     })
 
-    # === Chat Format für Qwen ===
     def format_chat(example):
         messages = example["messages"]
 
@@ -46,7 +59,6 @@ def main():
 
     dataset = dataset.map(format_chat)
 
-    # === Tokenisierung ===
     def tokenize_function(examples):
         text = examples["text"]
 
@@ -54,7 +66,6 @@ def main():
 
         labels = enc["input_ids"].copy()
 
-        # hier später Masking einbauen (wichtig!)
         enc["labels"] = labels
 
         return enc
@@ -65,8 +76,6 @@ def main():
         type="torch",
         columns=["input_ids", "attention_mask", "labels"]
     )
-
-    # === Training Args ===
     training_args = TrainingArguments(
         output_dir="../../models/Scientia1-0.5B",
         num_train_epochs=1,
@@ -78,8 +87,6 @@ def main():
         fp16=False,
         report_to=["tensorboard"],
     )
-
-    # === Trainer ===
     trainer = Trainer(
         model=model,
         args=training_args,

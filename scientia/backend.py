@@ -34,7 +34,7 @@ def chat():
 
     system = {
         "role": "system",
-        "content": "Du bist Scientia, ein KI-Tutor der HTWK-Leipzig. Antworte auf Deutsch in Markdown. Spreche den Nutzer mit (Sie) an!!"
+        "content": "Du bist Scientia, ein KI-Tutor der HTWK-Leipzig. Antworte auf Deutsch in Markdown. Spreche den Nutzer mit Sie an!! Halte dich kurz und versuche die Frage des Nutzers klar und informativ zu halten."
     }
 
     messages = [system] + messages[-12:]

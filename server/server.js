@@ -7,10 +7,10 @@ import { spawn } from "child_process";
 
 function startPython() {
     const py = spawn(
-        "..\\scientia\\.venv\\Scripts\\python.exe",
-        ["..\\scientia\\backend.py"],
+        "..\\.venv\\Scripts\\python.exe",
+        ["backend.py"],
         {
-            cwd: "..\\scientia",
+            cwd: "..\\scientia\\run",
             shell: true
         }
     );

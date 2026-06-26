@@ -35,15 +35,23 @@ with open(CHUNKS_FILE, "rb") as f:
 
 
 def search_vector_lib(query_text, k=2):
-    """Sucht die k relevantesten Abschnitte aus der Vektorbibliothek."""
+    """Sucht die k relevantesten Abschnitte mit korrekter E5-Normalisierung."""
     inputs = emb_tokenizer(
-        [f"query: {query_text}"], padding=True, truncation=True, max_length=512, return_tensors="pt"
+        [f"query: {query_text}"], padding=True, truncation=True, max_length=800, return_tensors="pt"
     ).to(device)
 
     with torch.no_grad():
         outputs = emb_model(**inputs)
 
-    query_vector = outputs.last_hidden_state.mean(dim=1).cpu().numpy().astype("float32")
+    attention_mask = inputs['attention_mask']
+    token_embeddings = outputs.last_hidden_state
+    input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
+    sum_embeddings = torch.sum(token_embeddings * input_mask_expanded, 1)
+    sum_mask = torch.clamp(input_mask_expanded.sum(1), min=1e-9)
+    query_vector = sum_embeddings / sum_mask
+
+    query_vector = torch.nn.functional.normalize(query_vector, p=2, dim=1)
+    query_vector = query_vector.cpu().numpy().astype("float32")
 
     distances, indices = faiss_index.search(query_vector, k)
 
@@ -78,7 +86,7 @@ def chat():
         if extra_infos:
             kontext_text = "\n---\n".join(extra_infos)
 
-            erweiterter_content = f"Nutze die folgenden Zusatzinformationen, um die Frage zu beantworten:\n{kontext_text}\n\nFrage: {user_query}"
+            erweiterter_content = f"Nutze die folgenden Zusatzinformationen, um die Frage zu beantworten, diese stammen nicht vom Nutzer:\n{kontext_text}\n\nFrage: {user_query}"
 
             for msg in reversed(messages):
                 if msg["role"] == "user":
@@ -87,7 +95,7 @@ def chat():
 
     system = {
         "role": "system",
-        "content": "Du bist Scientia, ein KI-Tutor der HTWK-Leipzig. Antworte auf Deutsch in Markdown. Spreche den Nutzer mit Sie an!! Halte dich kurz und versuche die Frage des Nutzers klar und informativ zu halten.",
+        "content": "Du bist Scientia, ein KI-Tutor der HTWK-Leipzig. Antworte auf Deutsch in Markdown. Spreche den Nutzer mit Sie an!! Halte dich kurz und versuche die Frage des Nutzers klar und informativ zu halten. Wenn der Nutzer \"JJ?\" schreibt antwortest du einfach nur \"JOJOJO?\"",
     }
 
     messages = [system] + messages[-12:]

@@ -18,13 +18,15 @@ def main():
     for filename in os.listdir(inpt_path):
         if filename.endswith(".pdf"):
             pdf_path = inpt_path / filename
+            filename_stem = pdf_path.stem
+            if pathlib.Path(out_path, f"{filename_stem}.md").exists():
+                continue
             print(f"Verarbeite: {filename}")
 
             try:
                 rendered = converter(str(pdf_path))
                 full_text, _, images = text_from_rendered(rendered)
 
-                filename_stem = pdf_path.stem
                 output_file = out_path / f"{filename_stem}.md"
 
                 with open(output_file, "w", encoding="utf-8") as f:

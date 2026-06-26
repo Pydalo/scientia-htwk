@@ -6,46 +6,52 @@ import config from "./config.js";
 import { spawn } from "child_process";
 
 function startPython() {
-    const py = spawn(
-        "..\\.venv\\Scripts\\python.exe",
-        ["backend.py"],
-        {
-            cwd: "..\\scientia\\run",
-            shell: true
-        }
-    );
-
-    /*
-    LINUX::
-        const py = spawn(
-        "../scientia/.venv/bin/python",
-        ["../scientia/backend.py"],
-        {
-            cwd: "../scientia"
-        }
+    const py;
+    if(config.windows) {
+        //::WINDOWS::
+        py = spawn(
+            "..\\.venv\\Scripts\\python.exe",
+            ["backend.py"],
+            {
+                cwd: "..\\scientia\\run",
+                shell: true
+            }
         );
-    */
+    } else {
+        //::LUNIX/iOS::
+        py = spawn(
+            "../scientia/.venv/bin/python",
+            ["../scientia/backend.py"],
+            {
+                cwd: "../scientia"
+            }
+        );
+    }
 
-    py.stdout.on("data", (data) => {
-        console.log(`[PYTHON] ${data.toString()}`);
-    });
+    if (config.debuglevel !== -1) {
+        py.stdout.on("data", (data) => {
+            console.log(`[PYTHON] ${data.toString()}`);
+        });
 
-    py.stderr.on("data", (data) => {
-        console.error(`[PYTHON ERROR] ${data.toString()}`);
-    });
+        py.stderr.on("data", (data) => {
+            console.error(`[PYTHON ERROR] ${data.toString()}`);
+        });
 
-    py.on("close", (code) => {
-        console.log(`[PYTHON EXIT] Code ${code}`);
-    });
+        py.on("close", (code) => {
+            console.log(`[PYTHON EXIT] Code ${code}`);
+        });
+    }
 }
 
+if(config.debuglevel !== -1) 
+    console.log("Waiting for loading and starting AI-backend...");
 startPython();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const fastify = Fastify({
-    logger: true
+    logger: config.debuglevel === 0
 });
 
 fastify.register(fastifyStatic, {
@@ -83,7 +89,7 @@ const start = async () => {
             host: config.host
         });
 
-        console.log("Server läuft auf Port 3000");
+        console.log(`Server is running on port ${config.port}`);
     } catch (err) {
         fastify.log.error(err);
         process.exit(1);

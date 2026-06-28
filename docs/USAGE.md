@@ -77,7 +77,7 @@ Das gesamte Projekt lässt sich in zwei Fraktionen unterteilen
 ### ./server - Serverapplikationen
 
 Hier liegt der NodeJS-Server und die Nutzerwebsite und alle dazu gehörigen Applikationen.
-Fogende Unterordner bzw Unterdateien sind in dem Ordner zu finden und wichtig zu erwähnen:
+Folgende Unterordner bzw Unterdateien sind in dem Ordner zu finden und wichtig zu erwähnen:
 
 - **/public** - Hier liegt die Website für den Nutzer
 - **server.js** - Hier liegt die Servapplikiation für den Nodejs-Server
@@ -95,4 +95,73 @@ Fogende Unterordner bzw Unterdateien sind in dem Ordner zu finden und wichtig zu
 ### ./scientia - Der eigentliche Chatbot
 
 Hier liegen alle Bibliotheken und ein gesamtes Python-Virtual-Enviroment.
-Ziel hierbei ist die Bereitstellungen des Chatbots, also das Laden, Ausführen, Trainieren und Bilden einer Datenbasis des Chatbots. Damit der Nutzer mit den Chatbot interagieren kann gibt es in der `backend.py` eine API (zum Austausch). 
+Ziel hierbei ist die Bereitstellungen des Chatbots, also das Laden, Ausführen, Trainieren und Bilden einer Datenbasis des Chatbots. Damit der Nutzer mit den Chatbot interagieren kann gibt es in der `backend.py` eine API (zum Austausch).
+Folgende Unterordner bzw Unterdateien sind in dem Ordner zu finden und wichtig zu erwähnen:
+
+- **/.venv** - Enthält die Python-Virtual-Enviroment also die Runtime für das AI-Python-Backend. Der Ordner **muss mittels eines Befehls von Python erstellt werden**, da dieser Ordner betriebssystemspezifische Dateien enthält. Hiermit kann ein Virtual-Enviroment erstellt werden:
+
+  ```shell
+  python -m venv ./.venv
+  ```
+
+  Beachten Sie, dass Python 3.11 erforderlich ist, da das AI-Backend dafür ausgelegt ist und Sie sich im Root-Directory befinden müssen. **Um mit `pip` das Projekt konfigurieren wollen, müssen Sie folgenden Befehl eintippen, um immer im Virtual-Enviroment zu sein:**
+  für Linux:
+  
+  ```shell
+  source .venv/bin/activate
+  ```
+
+  und für Windows nur:
+
+  ```shell
+  .venv/Scripts/activate
+  ```
+
+- **requirements.txt** - Diese Datei enthält (ähnlich wie die [package.json](#server---serverapplikationen)) alle Abhängigkeiten, die für das AI-Backend erforderlich sind. Um diese Abhängigkeiten für das spezifische Betriebssystem in das `/.venv` herunterzuladen muss folgender Befehl eingetippt werden, beachten Sie dieses mal auch, dass pip3.11 installiert sein muss: 
+
+  ```shell
+  pip install -r ./requierments.txt
+  ```
+
+  und Sie sich im Root-Directory befinden müssen. Falls Sie währen der Entwicklung neue Bibliotheken mit:
+
+  ```shell
+  pip install <package-name>
+  ```
+
+  installieren, müssen Sie die `requierments.txt` updaten, was Sie mit folgenden Befehl tun:
+
+  ```shell
+  pip freeze > ./requierments.txt
+  ```
+
+- **run/backend.py** - Diese Datei enhält die Applikation für den AI-Backend-Server. Beim starten (was automatisch durch den Nodejs-Server passiert) wird ein flask-Server gestartet und das/die KI-Modell(e) geladen.
+
+- **run/config.py** - Hier kann der AI-Backend-Server konfiguriert werden. Folgende Konfigurationsmöglichkeiten stehen zur auswahl:
+  
+  - `config.LLM_PATH` - Der Pfad zum LLM-Modell (large language model) (String)
+  - `config.EMB_PATH` - Der Pfad zum Embedding-Modell (String)
+  - `config.INDEX_FILE`- Der Pfad zu der Index-Datei der Vektorbibliothek (String)
+  - `config.CHUNKS_FILE` - Der Pfad zu der Pfad zu den rohen Chunks der Vektorbibliothek
+  - `config.HOST` - Der Host, auf dem der AI-Backend-Server läuft und für Nodejs-Server zugänglich ist (String)
+  - `config.PORT` - Der Port auf dem der AI-Backend-Server läuft und für Nodejs-Server zugänglich ist (Integer)
+  - `config.THREADS` - Die Anzahl an Threads, die der AI-Backend-Server zum parallelen Verarbeiten zur verfügung hat (Integer)
+  - `config.SYSTEM_PROMPT` - Der Systemprompt für die Nutzeranfragen für das LLM (String)
+  - `config.EXTENDED_CONTEXT(context_text, user_query)` - Das Format für die Zusatzinformationen aus der Vektorbibliothek und der Nutzerfrage. `context_text` ist die Zusatzinformation aus der Vekorbibliothek und `user_query` ist die Nutzerfrage (Function)
+
+- **run/run.py** - Eine Testdatei um ein KI-Modell zutesten, das KI-Modell ist liegt unter dem Pfad unter `config.LLM_PATH` in der `run/config.py`.
+
+- **training/download** - Diese Datei lädt ein KI-Modell herunter nutzen Sie folgende Funktion, die in diesem Beispiel das Modell `Qwen/Qwen3-4B-Instruct-2507` herunter lädt und unter `../../../models/Qwen/Qwen3-4B-Instruct-2507` speichert:
+
+  ```py
+  snapshot_download(
+      repo_id="Qwen/Qwen3-4B-Instruct-2507",
+      local_dir="../../../models/Qwen/Qwen3-4B-Instruct-2507"
+  )
+  ```
+
+- **training/split.py** - Diese Datei teilt einen Trainingsdatensatz in einer `all.json` in zwei weitere Dateien auf nähmlich die `train.json` und `val.json`, die für das Training essentiell sind. Unter der Bedingung, dass man sich im Virtual-Enviroment befinet (siehe oben unter */.venv*) kann die Datei mit folgenden Befehl genutz werden:
+
+```shell
+python train/split.py <pfad_zur_all.json> <pfad_zur_train.json> <pfad_zur_val.json>
+```

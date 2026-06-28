@@ -1,6 +1,7 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
+import config
 
-path = "../../models/Qwen/Qwen3-4B-Instruct-2507"
+path = config.LLM_PATH
 
 tokenizer = AutoTokenizer.from_pretrained(path)
 model = AutoModelForCausalLM.from_pretrained(path)

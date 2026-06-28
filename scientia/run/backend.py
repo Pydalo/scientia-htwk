@@ -7,13 +7,14 @@ import numpy as np
 import torch
 from transformers import AutoModel, AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer
 from waitress import serve
+import config
 
 app = Flask(__name__)
 
-LLM_PATH = "../../../models/Qwen/Qwen3-4B-Instruct-2507"
-EMB_PATH = "../../../models/intfloat/multilingual-e5-small"
-INDEX_FILE = "../data/veclib/vektorbase.index"
-CHUNKS_FILE = "../data/veclib/text_chunks.pkl"
+LLM_PATH = config.LLM_PATH
+EMB_PATH = config.EMB_PATH
+INDEX_FILE = config.INDEX_FILE
+CHUNKS_FILE = config.CHUNKS_FILE
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -84,18 +85,18 @@ def chat():
         extra_infos = search_vector_lib(user_query, k=2)
 
         if extra_infos:
-            kontext_text = "\n---\n".join(extra_infos)
+            context_text = "\n---\n".join(extra_infos)
 
-            erweiterter_content = f"Nutze die folgenden Zusatzinformationen, um die Frage zu beantworten, diese stammen nicht vom Nutzer:\n{kontext_text}\n\nFrage: {user_query}"
+            extended_context = config.EXTENDED_CONTEXT(context_text=context_text, user_query=user_query)
 
             for msg in reversed(messages):
                 if msg["role"] == "user":
-                    msg["content"] = erweiterter_content
+                    msg["content"] = extended_context
                     break
 
     system = {
         "role": "system",
-        "content": "Du bist Scientia, ein KI-Tutor der HTWK-Leipzig. Antworte auf Deutsch in Markdown. Spreche den Nutzer mit Sie an!! Halte dich kurz und versuche die Frage des Nutzers klar und informativ zu halten. Wenn der Nutzer \"JJ?\" schreibt antwortest du einfach nur \"JOJOJO?\"",
+        "content": config.SYSTEM_PROMT,
     }
 
     messages = [system] + messages[-12:]
@@ -131,5 +132,5 @@ def chat():
 
 
 if __name__ == "__main__":
-    print("Server started on port 5000 via Waitress WSGI")
-    serve(app, host="127.0.0.1", port=5000, threads=4)
+    print(f"Server started on port {config.PORT} via Waitress WSGI")
+    serve(app, host=config.HOST, port=config.PORT, threads=config.THREADS)

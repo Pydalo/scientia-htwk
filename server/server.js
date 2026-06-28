@@ -6,10 +6,7 @@ import config from "./config.js";
 import { spawn } from "child_process";
 
 function startPython() {
-    const py;
-    if(config.windows) {
-        //::WINDOWS::
-        py = spawn(
+    const py = spawn(
             "..\\.venv\\Scripts\\python.exe",
             ["backend.py"],
             {
@@ -17,16 +14,7 @@ function startPython() {
                 shell: true
             }
         );
-    } else {
-        //::LUNIX/iOS::
-        py = spawn(
-            "../scientia/.venv/bin/python",
-            ["../scientia/backend.py"],
-            {
-                cwd: "../scientia"
-            }
-        );
-    }
+    
 
     if (config.debuglevel !== -1) {
         py.stdout.on("data", (data) => {
@@ -44,7 +32,7 @@ function startPython() {
 }
 
 if(config.debuglevel !== -1) 
-    console.log("Waiting for loading and starting AI-backend...");
+console.log("Waiting for loading and starting AI-backend...");
 startPython();
 
 const __filename = fileURLToPath(import.meta.url);

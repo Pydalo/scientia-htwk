@@ -8,7 +8,7 @@ const config = {
     0 - debug all
     1 - network-debug disabled
     */
-    debuglevel: 1
+    debuglevel: 1 
 };
 
 export default config;

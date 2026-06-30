@@ -214,6 +214,30 @@ python train/split.py "pfad_zur_all.json" "pfad_zur_train.json" "pfad_zur_val.js
 
 - **veclib/genvectorlib.py** - Diese Datei generiert aus allen Markdowndateien unter `./data/veclib/md` eine Vektorbibliothek unter `./data/veclib/vektorbase.index` und `./data/veclib/text_chunks.pkl`. Dabei wird ein KI-Modell verwendet, dass unter den Pfad in `run/config.EMB_PATH`.
 
+## 3. Netzwerkpipeline
+
+Wie oben zu sehen gibt es zwei Server. Um nun das Zusammenspiel beider Server zu verstehen gehen wir einmal die gesamte Pipeline von der Nutzerfrage bis zum Ergebniss durch:
+
+1. **Client** - Der Nutzer tippt eine *Frage* in ein Input-Feld auf der Website ein und sendet ab.
+
+2. **Client** - Der Client hängt die *Frage* hinten an die Chathistory zu einen *Prompt* an.
+
+3. **Client** → **NodeJS-Server** - Der Client schickt den *Prompt* zum NodeJS-Server und baut eine Token-Stream-Connection über das Internet mit dem Client auf
+
+4. **NodeJS-Server** → **AI-Python-Backend-Server** - Der NodeJS-Server nimmt dem *Prompt* entgegen und leitet ihn direkt zum AI-Python-Backend-Server weiter. Beide Server laufen auf dem selben Hardware-Server
+
+5. **AI-Python-Backend-Server** - Der *Prompt* vom Client wird eventuell gekürzt und der Systemprompt angehangen.
+
+6. **AI-Python-Backend-Server** - Das Vektorbibliotheken Modell wird gestartet und die Vektorbibliothek wird auf wichtige Informationen für die Nutzerfrage durchsucht.
+
+7. **AI-Python-Backend-Server** - Das Ergebnis aus der Vektorbibliothek wird dem Systemprompt + *Prompt* angehängt.
+
+8. **AI-Python-Backend-Server** → **NodeJS-Server** → **Client** - Das eigentliche Modell wird geladen, die Eingabe wird in Tokens zerlegt und das KI-Modell sagt ein nächstes Token voraus. Dieses Token wird über den NodeJS-Server zum Client gesendet, der es dort visualiesiert. Dadurch wird der Eindruck erweckt, die KI, würde live ein Antwort verfassen, was sie ja im Grunde auch tut. Jedenfalls wiederholt sich dieser Vorgang bis das KI-Modell eine \<eos\>-Token generiert oder der Nutzer die Generierung abbricht.
+
+>### Warum brauchen wir eigentlich den NodeJS-Server?
+>
+> Die Frage ist berechtigt, da man ja an sich den NodeJS-Server weglassen könnte und damit ja sichtlich Laufzeit, Energie und Boilderplatte einsparen würde. Aber Python ist **40–70 %** langsamer als NodeJS das Argument mit dem Energie- und Laufzeitsparen ist also aus der Welt und Boilderplatte? NodeJS ist für Server ausgelegt und Javascript für die Webentwicklung. Da beides Javascript ist, ist das Interface fast fließend. Es geht einfach einfacher auf Nodejs einen statischen Server und eine API einzubauen, weshalb der NodeJS-Server doch eine gute Variante ist. Wenn Sie es aber dennoch zu umständlich finden, können Sie den Server gerne umstrukturieren.
+
 ## 4. Trainingsdaten
 
 Das KI-Modell bedient sich aus einer Vektorbibliothek. Der Vorteil bei einer solchen, ist, dass das Modell weniger bis gar nicht mehr haluziniert und die Daten einfacher erneuerbar sind, weshalb die Daten besser *up to date* sind.

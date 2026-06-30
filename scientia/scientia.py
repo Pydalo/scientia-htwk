@@ -29,7 +29,7 @@ parser_train_finetune.add_argument("-o", "--outputmodel", help="Der Pfad zum Out
 parser_train_finetune.add_argument("-v", "--vectormodel", help="Der Pfad zum Vektorbibliothekenmodel", default= str(Path(config.__file__).resolve().parent.absolute() / config.EMB_PATH))
 parser_train_finetune.add_argument("-d", "--traindata", help="Der Pfad zu den Ordner mit der train.json und val.json", default= str(script_path / "./data"), type=str)
 parser_train_finetune.add_argument("-l", "--veclib", help="Der Pfad zur Vektorbibliothek", default= str(script_path / "./data/veclib"), type=str)
-# scientia split [(--file|-f)=<filepath>]
+# scientia split [(--file|-f)=<filepath>] [(--dst|-d)=outputdir]
 parser_train_split = train_subparsers.add_parser("split", help="Teile die Trainingsdaten in train.json und val.json auf")
 parser_train_split.add_argument("-f", "--file", help="Die all.json", default= str(script_path / "./data/all.jsonl"), type=str)
 parser_train_split.add_argument("-d", "--dst", help="Das outputdirectory", default= str(script_path / "./data/"), type=str)
@@ -40,7 +40,7 @@ veclib_subparsers = parser_veclib.add_subparsers(dest="lib_command", required=Tr
 parser_veclib_add = veclib_subparsers.add_parser("add", help="Füge eine neue Markdowndatei zu den Trainingsdaten hinzu")
 parser_veclib_add.add_argument("file", help="Die Markdowndatei", type=str)
 parser_veclib_add.add_argument("-r", "--raw", action="store_true", help="Kopiere in den RAW-Ordner './data/veclib/raw'. Dient zum speichern Roher Trainingsdaten")
-# scientia lib list
+# scientia lib list [--raw|-r] [--ignore|-i <ignores>...]
 parser_veclib_list = veclib_subparsers.add_parser("list", help="Liste alle Trainingsdaten auf")
 parser_veclib_list.add_argument("-r", "--raw", action="store_true", help="List alle Dateien im Raw Ordner auf")
 parser_veclib_list.add_argument(
@@ -52,11 +52,11 @@ parser_veclib_list.add_argument(
 parser_veclib_remove = veclib_subparsers.add_parser("remove", help="Entferne eine Trainingsdatei")
 parser_veclib_remove.add_argument("file", help="Der Dateinamen, den Sie entfernen wollen", type=str)
 parser_veclib_remove.add_argument("-r", "--raw", action="store_true", help="Lösche in den RAW-Ordner './data/veclib/raw'.")
-# scientia lib build [(--src|-s)=sourcemds] [(--output|-o)=outputdir]
+# scientia lib build [(--src|-s)=sourcemds] [(--dst|-d)=outputdir]
 parser_veclib_build = veclib_subparsers.add_parser("build", help="Baue eine Vektorbibliothek")
 parser_veclib_build.add_argument("-s", "--src", type=str, default= str(script_path / "./data/veclib/md"), help="Der Pfad zu dem Ordner mit den Inputdateien, ausdem die Vektorbib gebaut wird.")
 parser_veclib_build.add_argument("-d", "--dst", help="Das Outputverzeichnis wo die 'text_chunks.pkl' und 'vektorbase.index' hinkopiert werden.", type=str, default= script_path / "./data/veclib/")
-# scientia lib conver [(--src|-s)=sourcepdfs] [(--output|-o)=outputmddir]
+# scientia lib conver [(--src|-s)=sourcepdfs] [(--dst|-d)=outputmddir]
 parser_veclib_covert = veclib_subparsers.add_parser("convert", help="Konvertiere eine PDF zu Markdown und füge sie zu den Trainingsdaten hinzu")
 parser_veclib_covert.add_argument("-s", "--src", type=str, default= str(script_path / "./data/veclib/raw"), help="Übersetze das Verzeichnis oder die angegebene Datei in Markdown")
 parser_veclib_covert.add_argument("-d", "--dst", type=str, default= str(script_path / "./data/veclib/md"), help="Das Verzeichnis in das kopiert wird")

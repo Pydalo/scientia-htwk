@@ -395,3 +395,59 @@ Wenn Sie alle Markdowns gesammelt haben, können Sie eine Vektobibliothek bauen.
 ```
 
 Als Ergebniss bekommen Sie eine Vektorbibliothek unter `./data/veclib/vektorbase.index` und `./data/veclib/text_chunks.pkl`.
+
+## 5. Befehle
+
+Alle folgenden Befehle funktionieren sowhl auf Windows als auch auf Linux. Alles in diesen Klammern `[]` können Sie für die einfache Nutzung ignorieren. Alles in diesen Klammern `<>` gilt als Platzhalter und muss von Ihnen definiert werden. Ein `|` ist ein oder.
+
+* Falls Sie hilfe brauchen geben Sie das ein:
+
+  ```shell
+  ./sce.bat --help
+  ```
+
+* Nutzen Sie zum Starten des NodeJS-Servers folgenden Befehl:
+
+  ```shell
+  ./server.bat
+  ```
+
+* Nutzen Sie zum Starten des AI-Python-Backend-Servers:
+
+  ```shell
+  ./sce.bat server
+  ```
+
+* Nutzen Sie zum Finetunen eine KI-Modells:
+
+  ```shell
+  ./sce.bat train [-i|--inputmodel <inputmodelpfad>] [-o|--outputmodel <outputmodelpfad>] [-v|--vectormodel <vektormodelpfad>] [-d|--traindata <pfadtrainingsdaten>] [-l|--veclib <vektorbibliothekpfad>]
+  ```
+
+* Nutzen Sie zum Vorbereiten der Trainingsdaten **vor dem Training**:
+
+  ```shell
+  ./sce.bat split [(--file|-f)=<filepath>] [(--dst|-d)=<outputdir>]
+  ```
+
+* Nutzen Sie zum Hinzufügen fertiger Trainingsdaten (Markdowns) für die Vektorbibliothek. Falls Sie rohe Trainingsdaten zwischenspeichern, oder PDFs kompilieren wollen nutzen Sie den `-r`-flag:
+
+  ```shell
+  ./sce.bat lib add <file> [--raw|-r]
+  ```
+
+* Nutzen Sie zum Auflisten aller Trainingsdaten. Sie können das `-r`-flag nutzen um alle rohen Trainingsdaten, die im vorherigen Befehl mit dem `-r`-flag hinzugefügt wurden sind auszugeben. Sie können mit dem `-i`-flag und darauffolgende *Glob-Patterns* Dateien und Ordner ignorieren:
+
+  ```shell
+  ./sce.bat list [--raw|-r] [--ignore|-i <ignores>...]
+  ```
+
+* Nutzen Sie zum Entfernen fertiger Trainingsdaten (Markdowns) für die Vektorbibliothek. Falls Sie rohe Trainingsdaten zu löschen, oder PDFs zu entfernen wollen nutzen Sie den `-r`-flag:
+
+  ```shell
+  ./sce.bat lib remove <file> [--raw|-r]
+  ```
+
+## 6. Q/A
+
+### Wie starte ich den Server mit KI?

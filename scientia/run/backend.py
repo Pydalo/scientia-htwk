@@ -7,14 +7,19 @@ import numpy as np
 import torch
 from transformers import AutoModel, AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer
 from waitress import serve
+from pathlib import Path
+import sys
+sys.path.append(str(Path(__file__).resolve().parent))
 import config
-
 app = Flask(__name__)
 
-LLM_PATH = config.LLM_PATH
-EMB_PATH = config.EMB_PATH
-INDEX_FILE = config.INDEX_FILE
-CHUNKS_FILE = config.CHUNKS_FILE
+
+config_path = Path(config.__file__).resolve().parent
+
+LLM_PATH = config_path / config.LLM_PATH
+EMB_PATH = config_path / config.EMB_PATH
+INDEX_FILE = config_path / config.INDEX_FILE
+CHUNKS_FILE = config_path / config.CHUNKS_FILE
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -30,7 +35,7 @@ emb_tokenizer = AutoTokenizer.from_pretrained(EMB_PATH)
 emb_model = AutoModel.from_pretrained(EMB_PATH).to(device)
 emb_model.eval()
 
-faiss_index = faiss.read_index(INDEX_FILE)
+faiss_index = faiss.read_index(str(INDEX_FILE))
 with open(CHUNKS_FILE, "rb") as f:
     all_chunks = pickle.load(f)
 
@@ -130,6 +135,10 @@ def chat():
 
     return Response(generate(), mimetype="text/plain", direct_passthrough=True)
 
+
+def start():
+    print(f"Server started on port {config.PORT} via Waitress WSGI")
+    serve(app, host=config.HOST, port=config.PORT, threads=config.THREADS)
 
 if __name__ == "__main__":
     print(f"Server started on port {config.PORT} via Waitress WSGI")

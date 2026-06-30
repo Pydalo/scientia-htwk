@@ -1,4 +1,5 @@
 LLM_PATH : str = "../../../models/Qwen/Qwen3-4B-Instruct-2507"
+LLM_NEW_PATH : str = "../../../models/Scientia/Scientia_v1"
 EMB_PATH : str = "../../../models/intfloat/multilingual-e5-small"
 INDEX_FILE : str = "../data/veclib/vektorbase.index"
 CHUNKS_FILE : str = "../data/veclib/text_chunks.pkl"

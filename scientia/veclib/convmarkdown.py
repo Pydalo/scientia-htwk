@@ -4,9 +4,11 @@ from marker.converters.pdf import PdfConverter
 from marker.models import create_model_dict
 from marker.output import text_from_rendered
 
-def main():
-    inpt_path = pathlib.Path("../data/veclib/raw").resolve()
-    out_path = pathlib.Path("../data/veclib/md").resolve()
+script_dir = pathlib.Path(__file__).resolve().parent
+
+def start(src, dst):
+    inpt_path = src
+    out_path = dst
 
     out_path.mkdir(parents=True, exist_ok=True)
 
@@ -15,12 +17,19 @@ def main():
     converter = PdfConverter(artifact_dict=artifact_dict)
 
     print("Starte Konvertierung...")
-    for filename in os.listdir(inpt_path):
-        if filename.endswith(".pdf"):
+    if os.path.isdir(dst):
+        for filename in os.listdir(inpt_path):
+            convsingle(filename, inpt_path, out_path, converter)
+    else:
+        convsingle(filename, inpt_path, out_path, converter)
+    print("Fertig!")
+
+def convsingle(filename, inpt_path, out_path, converter):
+    if filename.endswith(".pdf"):
             pdf_path = inpt_path / filename
             filename_stem = pdf_path.stem
             if pathlib.Path(out_path, f"{filename_stem}.md").exists():
-                continue
+                return
             print(f"Verarbeite: {filename}")
 
             try:
@@ -45,7 +54,6 @@ def main():
             except Exception as e:
                 print(f"Fehler bei Datei {filename}: {e}")
 
-    print("Fertig!")
 
 if __name__ == '__main__':
-    main()
+    start(script_dir / pathlib.Path("../data/veclib/raw").resolve(), script_dir / pathlib.Path("../data/veclib/md").resolve())

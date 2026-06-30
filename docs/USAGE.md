@@ -2,7 +2,6 @@
 
 ## Struktureller Dateiaufbau
 
-plotterraum
 Folgendes zeigt den Dateiaufbau des Repositories:
 ```dirs
 .
@@ -72,7 +71,15 @@ Folgendes zeigt den Dateiaufbau des Repositories:
 
 ## Projekt Fraktionen Überblick
 
-Das gesamte Projekt lässt sich in zwei Fraktionen unterteilen
+Bevor Sie irgendetwas tun, überprüfen Sie, ob Python, Nodejs und npm installiert sind. Die Befehle dafür finden Sie in der mittleren Spalte, falls dabei aber nicht die Version in der linken Spalte zu sehen sind, nutzen Sie den Befehl aus der Rechten Spalte um die Abhängigkeit **GLOBAL** zu installieren, falls Sie windows nutzen, müssen Sie die letzte Spalte nutzen, um die Abhängigkeit manuell über den Browser zu installieren:
+
+|Version          |Prüfbefehl        |Installation (Linux/iOS)                        |Installation (Windows über Browser)                        |
+|-----------------|------------------|------------------------------------------------|-------------------------------------------------------------|
+|*nodejs v24.11.0*|`node -v`         |`curl -o- https://githubusercontent.com \| bash && source ~/.bashrc && nvm install 24.11.0 && nvm use 24.11.0`| [Node.js v24 Release Archiv](https://nodejs.org) |
+|*npm v11.16.0*   |`npm -v`          |`npm install -g npm@11.16.0`                    |*Wird automatisch mit Node.js installiert*                   |
+|*python v3.13.14*|`python --version`|`curl https://pyenv.run \| bash && exec $SHELL && pyenv install 3.13.14 && pyenv global 3.13.14`              | [Python 3.13 offizielle Downloads](https://python.org) |
+
+Das gesamte Projekt lässt sich in zwei Fraktionen unterteilen:
 
 ### ./server - Serverapplikationen
 
@@ -80,7 +87,13 @@ Hier liegt der NodeJS-Server und die Nutzerwebsite und alle dazu gehörigen Appl
 Folgende Unterordner bzw Unterdateien sind in dem Ordner zu finden und wichtig zu erwähnen:
 
 - **/public** - Hier liegt die Website für den Nutzer
-- **server.js** - Hier liegt die Servapplikiation für den Nodejs-Server
+- **server.js** - Hier liegt die Servapplikiation für den Nodejs-Server. Es ist wichtig, dass Sie
+  vor dem ersten Start alle Abhängigkeiten installieren, was mit einem Zum Starten des Servers geben sie aus dem Root-Directory (Hauptordner des Projektes) folgenden Befehl ein:
+  
+  ```shell
+  cd ./server | node server.js
+  ```
+
 - **config.js** - Hier kann der Nodejs-Server konfiguriert werden, folgende Optionen stehen zur Auswahl:
   - `config.port` - Der Port auf dem der Nodejs-Server läuft (Integer)
   - `config.host` - Der Host unter dem der Nodejs-Server aufrufbar ist (String)
@@ -104,17 +117,23 @@ Folgende Unterordner bzw Unterdateien sind in dem Ordner zu finden und wichtig z
   python -m venv ./.venv
   ```
 
-  Beachten Sie, dass Python 3.11 erforderlich ist, da das AI-Backend dafür ausgelegt ist und Sie sich im Root-Directory befinden müssen. **Um mit `pip` das Projekt konfigurieren wollen, müssen Sie folgenden Befehl eintippen, um immer im Virtual-Enviroment zu sein:**
+  Beachten Sie, dass Python 3.11 erforderlich ist, da das AI-Backend dafür ausgelegt ist und Sie sich im richtigen Ordner befinden, was für alle folgenden, `./scientia`-betreffenden Befehlen sehr wichtig ist, dafür navoigieren Sie in den Ordner `./scientia`, was sie aus dem Root-Directory (Der Hauptordner des Projektes) mit folgenden Befehl tun:
+  
+  ```shell
+  cd ./scienta
+  ```
+  
+  . **Um mit `pip` das Projekt konfigurieren wollen, müssen Sie folgenden Befehl eintippen, um immer im Virtual-Enviroment zu sein:**
   für Linux:
   
   ```shell
-  source .venv/bin/activate
+  source ./.venv/bin/activate
   ```
 
   und für Windows nur:
 
   ```shell
-  .venv/Scripts/activate
+  ./.venv/Scripts/activate
   ```
 
 - **requirements.txt** - Diese Datei enthält (ähnlich wie die [package.json](#server---serverapplikationen)) alle Abhängigkeiten, die für das AI-Backend erforderlich sind. Um diese Abhängigkeiten für das spezifische Betriebssystem in das `/.venv` herunterzuladen muss folgender Befehl eingetippt werden, beachten Sie dieses mal auch, dass pip3.11 installiert sein muss: 
@@ -126,7 +145,7 @@ Folgende Unterordner bzw Unterdateien sind in dem Ordner zu finden und wichtig z
   und Sie sich im Root-Directory befinden müssen. Falls Sie währen der Entwicklung neue Bibliotheken mit:
 
   ```shell
-  pip install <package-name>
+  pip install package-name
   ```
 
   installieren, müssen Sie die `requierments.txt` updaten, was Sie mit folgenden Befehl tun:
@@ -151,17 +170,20 @@ Folgende Unterordner bzw Unterdateien sind in dem Ordner zu finden und wichtig z
 
 - **run/run.py** - Eine Testdatei um ein KI-Modell zutesten, das KI-Modell ist liegt unter dem Pfad unter `config.LLM_PATH` in der `run/config.py`.
 
-- **training/download** - Diese Datei lädt ein KI-Modell herunter nutzen Sie folgende Funktion, die in diesem Beispiel das Modell `Qwen/Qwen3-4B-Instruct-2507` herunter lädt und unter `../../../models/Qwen/Qwen3-4B-Instruct-2507` speichert:
+- **training/download** - Diese Datei lädt ein KI-Modell von [Huggingface](https://huggingface.co/) herunter. Dabei können zwei Argumente an die Datei übergeben werden, wie hierfolgt dargestellt:
 
-  ```py
-  snapshot_download(
-      repo_id="Qwen/Qwen3-4B-Instruct-2507",
-      local_dir="../../../models/Qwen/Qwen3-4B-Instruct-2507"
-  )
+  ```shell
+  python ./training/download "hugginface_modell_pfad" "lokaler_pfad_relativ_zum_current_dir"
   ```
+
+  Falls keine Parameter angegeben werden, werden folgende zwei Modelle installiert:
+  
+  - `Qwen/Qwen3-4B-Instruct-2507` unter den Dateipfad (rel. zum Root): `../models/Qwen/Qwen3-4B-Instruct-2507` - das Hauptmodell
+  - `intfloat/multilingual-e5-small` unter den Dateipfad (rel. zum Root): `../models/intfloat/multilingual-e5-small` - Das Vektorbibliotheken Modell
+
 
 - **training/split.py** - Diese Datei teilt einen Trainingsdatensatz in einer `all.json` in zwei weitere Dateien auf nähmlich die `train.json` und `val.json`, die für das Training essentiell sind. Unter der Bedingung, dass man sich im Virtual-Enviroment befinet (siehe oben unter */.venv*) kann die Datei mit folgenden Befehl genutz werden:
 
 ```shell
-python train/split.py <pfad_zur_all.json> <pfad_zur_train.json> <pfad_zur_val.json>
+python train/split.py "pfad_zur_all.json" "pfad_zur_train.json" "pfad_zur_val.json"
 ```

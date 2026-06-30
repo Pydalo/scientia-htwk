@@ -5,16 +5,23 @@ import { fileURLToPath } from "url";
 import config from "./config.js";
 import { spawn } from "child_process";
 
+const esFilename = fileURLToPath(import.meta.url);
+const esDirname = path.dirname(esFilename);
+
+const isWin = process.platform === "win32";
+const targetDir = path.resolve(esDirname, "..");
+
 function startPython() {
     const py = spawn(
-            "..\\.venv\\Scripts\\python.exe",
-            ["backend.py"],
-            {
-                cwd: "..\\scientia\\run",
-                shell: true
-            }
-        );
-    
+        isWin ? "cmd.exe" : "./sce.bat",
+        isWin ? ["/c", "sce.bat", "server"] : ["server"],
+        {
+            cwd: targetDir,
+            shell: isWin,
+            stdio: ['ignore', 'pipe', 'pipe']
+        }
+    );
+
 
     if (config.debuglevel !== -1) {
         py.stdout.on("data", (data) => {

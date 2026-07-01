@@ -9,7 +9,8 @@
 5. [Befehle](#5-befehle)
 6. [Starten unter UNIX von 0](#6-starten-unter-unix-linuxmacos-von-0)
 
-=> ***Schauen Sie auch [Planungsdokument](./docs/ChatbotPlanung.pdf)***
+=> ***Schauen Sie auch [ChatbotPlanung.pdf](./docs/ChatbotPlanung.pdf)***
+=> ***Wollen Sie die README im PDF-Format? Schauen Sie hier → [README.pdf](./docs/ChatbotPlanung.pdf)***
 
 > Wenn Sie der Serveradmin sind und schnell Anfangen wollen empfehle ich Ihnen mit [6. Starten unter UNIX von 0](#6-starten-unter-unix-linuxmacos-von-0) zu beginnen und sich dannach [3. Netzwerkpipeline](#3-netzwerkpipeline), [5. Befehle](#5-befehle) und [2. *scientia-base* - **Leitfaden zur Weiterentwicklung**](#2-scientia-base---leitfaden-zur-weiterentwicklung) durchzugehen. Wenn Sie einfach nur wissen wollen wie man die Trainingsdaten extrahiert nutzen Sie [4. Trainingsdaten](#4-trainingsdaten)
 

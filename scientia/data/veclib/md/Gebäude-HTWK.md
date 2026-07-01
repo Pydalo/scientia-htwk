@@ -157,7 +157,7 @@ Karl-Liebknecht-Straße 145
 
 ---
 ## Medienzentrum
-Im 2009 eingeweihten Medienzentrum (MZ) bieten moderne Audio- und Video-Studios, Schnitt- und Compositing-Arbeitsplätze, Druck- und Buchbindereimaschinensäle sowie Labore für die Druckvorstufe und die Verpackungstechnik beste Bedingungen für die praxisorientierte Ausbildung.
+Im 2009 eingeweihten Medienzentrum (MZ) bieten moderne Audio- und Video-StudmacOS, Schnitt- und Compositing-Arbeitsplätze, Druck- und Buchbindereimaschinensäle sowie Labore für die Druckvorstufe und die Verpackungstechnik beste Bedingungen für die praxisorientierte Ausbildung.
 
 ### Adresse
 Gustav-Freytag-Straße 40 a

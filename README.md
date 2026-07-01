@@ -1,5 +1,16 @@
 # README of Project for LLM '***Scientia***'
 
+## Inhaltsverzeichnis
+
+1. [Overview](#1-overview)
+2. [*scientia-base* - **Leitfaden zur Weiterentwicklung**](#2-scientia-base---leitfaden-zur-weiterentwicklung)
+3. [Netzwerkpipeline](#3-netzwerkpipeline)
+4. [Trainingsdaten](#4-trainingsdaten)
+5. [Befehle](#5-befehle)
+6. [Starten unter UNIX von 0](#6-starten-unter-unix-linuxmacos-von-0)
+
+=> ***Schauen Sie auch [Planungsdokument](./docs/ChatbotPlanung.pdf)***
+
 ## 1. Overview
 
 * Author: *Pydalo / Peter Helmut Wohlfarth*
@@ -84,11 +95,11 @@ Folgendes zeigt den Dateiaufbau des Repositories:
 
 Bevor Sie irgendetwas tun, überprüfen Sie, ob Python, Nodejs und npm installiert sind. Die Befehle dafür finden Sie in der mittleren Spalte, falls dabei aber nicht die Version in der linken Spalte zu sehen sind, nutzen Sie den Befehl aus der Rechten Spalte um die Abhängigkeit **GLOBAL** zu installieren, falls Sie windows nutzen, müssen Sie die letzte Spalte nutzen, um die Abhängigkeit manuell über den Browser zu installieren:
 
-|Version          |Prüfbefehl        |Installation (Linux/iOS)                        |Installation (Windows über Browser)                        |
-|-----------------|------------------|------------------------------------------------|-------------------------------------------------------------|
-|*nodejs v24.11.0*|`node -v`         |`curl -o- https://githubusercontent.com \| bash && source ~/.bashrc && nvm install 24.11.0 && nvm use 24.11.0`| [Node.js v24 Release Archiv](https://nodejs.org) |
-|*npm v11.16.0*   |`npm -v`          |`npm install -g npm@11.16.0`                    |*Wird automatisch mit Node.js installiert*                   |
-|*python v3.13.14*|`python --version`|`curl https://pyenv.run \| bash && exec $SHELL && pyenv install 3.13.14 && pyenv global 3.13.14`              | [Python 3.13 offizielle Downloads](https://python.org) |
+| Software | Version | Prüfbefehl | Installation (Linux/macOS) | Installation (Windows) |
+|----------|---------|------------|-----------------------------|-------------------------|
+| Node.js | `v24.11.0` | `node -v` | `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh \| bash && source ~/.bashrc && nvm install 24.11.0 && nvm use 24.11.0` | https://nodejs.org |
+| npm | `v11.16.0` | `npm -v` | `npm install -g npm@11.16.0` | Wird automatisch mit Node.js installiert. |
+| Python | `v3.13.14` | `python --version` | `curl https://pyenv.run \| bash && exec $SHELL && pyenv install 3.13.14 && pyenv global 3.13.14` | https://www.python.org/downloads/ |
 
 Das gesamte Projekt lässt sich in zwei Fraktionen unterteilen:
 
@@ -108,7 +119,7 @@ Folgende Unterordner bzw Unterdateien sind in dem Ordner zu finden und wichtig z
 - **config.js** - Hier kann der Nodejs-Server konfiguriert werden, folgende Optionen stehen zur Auswahl:
   - `config.port` - Der Port auf dem der Nodejs-Server läuft (Integer)
   - `config.host` - Der Host unter dem der Nodejs-Server aufrufbar ist (String)
-  - `config.windows` - Ist `true` wenn der Nodejs-Server auf WindowsOS läuft, jeder andere Wert bedeutet, dass der Server auf Linux oder iOS (ist vom Kernel dasselbe) läuft (Boolean)
+  - `config.windows` - Ist `true` wenn der Nodejs-Server auf WindowsOS läuft, jeder andere Wert bedeutet, dass der Server auf Linux oder macOS (ist vom Kernel dasselbe) läuft (Boolean)
   - `config.debuglevel` - Teilt den Nodejs-Server mit wie viel er an Debug-Nachrichten ausgeben soll. Dabei bedeuten folgende Werte folgendes für den Nodejs-Server:
     - `-1` - Der Nodejs Server gibt **keine** Debug-Nachricht aus (außer Fehlermeldungen auf dem Server selbst)
     - `0` - Der Nodejs Server gibt **jede** Debug-Nachricht aus
@@ -398,56 +409,328 @@ Als Ergebniss bekommen Sie eine Vektorbibliothek unter `./data/veclib/vektorbase
 
 ## 5. Befehle
 
-Alle folgenden Befehle funktionieren sowhl auf Windows als auch auf Linux. Alles in diesen Klammern `[]` können Sie für die einfache Nutzung ignorieren. Alles in diesen Klammern `<>` gilt als Platzhalter und muss von Ihnen definiert werden. Ein `|` ist ein oder.
+Alle Befehle funktionieren unter Windows und Linux.
 
-* Falls Sie hilfe brauchen geben Sie das ein:
+- Alles in `[]` ist optional.
+- Alles in `<>` ist ein Platzhalter und muss ersetzt werden.
+- `|` bedeutet "oder".
 
-  ```shell
-  ./sce.bat --help
-  ```
+### Hilfe anzeigen
 
-* Nutzen Sie zum Starten des NodeJS-Servers folgenden Befehl:
+```sh
+./sce.bat --help
+```
 
-  ```shell
-  ./server.bat
-  ```
+Zeigt die vollständige Befehlsübersicht an.
 
-* Nutzen Sie zum Starten des AI-Python-Backend-Servers:
+---
 
-  ```shell
-  ./sce.bat server
-  ```
+### NodeJS-Server starten
 
-* Nutzen Sie zum Finetunen eine KI-Modells:
+```sh
+./server.bat
+```
 
-  ```shell
-  ./sce.bat train [-i|--inputmodel <inputmodelpfad>] [-o|--outputmodel <outputmodelpfad>] [-v|--vectormodel <vektormodelpfad>] [-d|--traindata <pfadtrainingsdaten>] [-l|--veclib <vektorbibliothekpfad>]
-  ```
+Startet den NodeJS-Server.
 
-* Nutzen Sie zum Vorbereiten der Trainingsdaten **vor dem Training**:
+---
 
-  ```shell
-  ./sce.bat split [(--file|-f)=<filepath>] [(--dst|-d)=<outputdir>]
-  ```
+### Python-Backend starten
 
-* Nutzen Sie zum Hinzufügen fertiger Trainingsdaten (Markdowns) für die Vektorbibliothek. Falls Sie rohe Trainingsdaten zwischenspeichern, oder PDFs kompilieren wollen nutzen Sie den `-r`-flag:
+```sh
+./sce.bat server
+```
 
-  ```shell
-  ./sce.bat lib add <file> [--raw|-r]
-  ```
+Startet das AI-Python-Backend.
 
-* Nutzen Sie zum Auflisten aller Trainingsdaten. Sie können das `-r`-flag nutzen um alle rohen Trainingsdaten, die im vorherigen Befehl mit dem `-r`-flag hinzugefügt wurden sind auszugeben. Sie können mit dem `-i`-flag und darauffolgende *Glob-Patterns* Dateien und Ordner ignorieren:
+---
 
-  ```shell
-  ./sce.bat list [--raw|-r] [--ignore|-i <ignores>...]
-  ```
+### Modell finetunen
 
-* Nutzen Sie zum Entfernen fertiger Trainingsdaten (Markdowns) für die Vektorbibliothek. Falls Sie rohe Trainingsdaten zu löschen, oder PDFs zu entfernen wollen nutzen Sie den `-r`-flag:
+```sh
+./sce.bat train finetune \
+    [-i <inputmodell>] \
+    [-o <outputmodell>] \
+    [-v <vektormodell>] \
+    [-d <trainingsdaten>] \
+    [-l <vektorbibliothek>]
+```
 
-  ```shell
-  ./sce.bat lib remove <file> [--raw|-r]
-  ```
+Trainiert bzw. finetuned ein vorhandenes Sprachmodell.
 
-## 6. Q/A
+---
 
-### Wie starte ich den Server mit KI?
+### Trainingsdaten aufteilen
+
+```sh
+./sce.bat train split \
+    [-f <all.jsonl>] \
+    [-d <ausgabeordner>]
+```
+
+Teilt `all.jsonl` automatisch in `train.json` und `val.json` auf.
+
+---
+
+### Markdown-Datei zur Vektorbibliothek hinzufügen
+
+```sh
+./sce.bat lib add <datei> [-r]
+```
+
+Fügt eine Markdown-Datei hinzu.
+
+Mit `-r` wird sie stattdessen im RAW-Ordner (`data/veclib/raw`) gespeichert.
+
+---
+
+### Trainingsdaten auflisten
+
+```sh
+./sce.bat lib list [-r] [-i <glob> ...]
+```
+
+Listet alle Trainingsdaten auf.
+
+Optionen:
+
+- `-r` zeigt den RAW-Ordner an.
+- `-i` ignoriert Dateien oder Ordner anhand von Glob-Patterns.
+
+---
+
+### Trainingsdaten entfernen
+
+```sh
+./sce.bat lib remove <datei> [-r]
+```
+
+Entfernt eine Datei aus der Vektorbibliothek.
+
+Mit `-r` wird aus dem RAW-Ordner gelöscht.
+
+---
+
+### Vektorbibliothek erzeugen
+
+```sh
+./sce.bat lib build \
+    [-s <markdownordner>] \
+    [-d <ausgabeordner>]
+```
+
+Erstellt aus den Markdown-Dateien eine neue Vektorbibliothek.
+
+---
+
+### PDFs nach Markdown konvertieren
+
+```sh
+./sce.bat lib convert \
+    [-s <pdf-ordner>] \
+    [-d <markdown-ordner>]
+```
+
+Konvertiert PDFs in Markdown und speichert sie im Zielordner.
+
+---
+
+### KI-Modell herunterladen
+
+```sh
+./sce.bat download \
+    [-m <huggingface-modell>] \
+    [-p <zielordner>]
+```
+
+Lädt ein Modell von Hugging Face herunter.
+
+Werden keine Parameter angegeben, werden die Standardmodelle heruntergeladen.
+
+---
+
+### Modell in der Konsole testen
+
+```sh
+./sce.bat test
+```
+
+Startet den Chatbot direkt in der Konsole.
+
+## 6. Starten (Unter UNIX: Linux/macOS von 0)
+
+> Falls Sie Windows nutzen, schauen Sie oben oder lassen Sie sich alle UNIX von einer KI in eine Anleitung für Windows umwandeln.
+
+1. **NodeJS installieren**
+    Das tun Sie mit folgenden Befehl:
+
+    ```shell
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash && source ~/.bashrc && nvm install 24.11.0 && nvm use 24.11.0
+    ```
+
+    Dannach:
+
+    ```shell
+    node -v | npm -v
+    ```
+
+    Wenn dann folgendes kommt war die Installation erfolgreich:
+
+    ```shell
+    v24.11.0
+    v11.6.1
+    ```
+
+2. **Python installieren**
+
+    Installieren Sie Python mit den folgenden Befehlen:
+
+    ### Ubuntu/Debian: Build-Abhängigkeiten installieren
+
+    ```sh
+    sudo apt update
+    sudo apt install -y \
+    build-essential \
+    curl \
+    git \
+    libssl-dev \
+    zlib1g-dev \
+    libbz2-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    libffi-dev \
+    libncursesw5-dev \
+    libgdbm-dev \
+    libnss3-dev \
+    liblzma-dev \
+    tk-dev \
+    uuid-dev \
+    libxml2-dev \
+    libxmlsec1-dev \
+    xz-utils
+    ```
+
+    ### Python installieren
+
+    ```sh
+    curl https://pyenv.run | bash
+
+    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+    echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+    echo 'eval "$(pyenv init - bash)"' >> ~/.bashrc
+
+    source ~/.bashrc
+
+    pyenv install 3.13.14
+    pyenv global 3.13.14
+    ```
+
+    Überprüfen Sie anschließend die Installation:
+
+    ```sh
+    python --version
+    ```
+
+    Bekommen Sie folgendes als Output waren Sie erfolgreich. Glückwunsch!:
+
+    ```shell
+    #Python 3.13.14
+    ```
+
+3. **Scientia-Core herunterladen**
+
+    Zuvor müssen Sie `git` installiert haben. Geben Sie folgendes ein:
+
+    ```shell
+    sudo apt install git
+    ```
+
+    Geben Sie einmal folgendes ein wenn eine Version erscheint haben Sie `git` erfolgreich installiert:
+
+    ```shell
+    git --version
+    ```
+
+    Jetzt bewegen Sie sich mit `cd <relativer_pfad>` (`..` heißt einmal herausnavigieren) zu ihren Ordner, wo der Chatbot liegen soll und laden Sie Scientia-Core mit folgenden Command herunter:
+
+    ```shell
+    git clone https://github.com/Pydalo/scientia-htwk
+    ```
+
+    Nun liegt im Unterordner `/scientia-htwk` Scientia-Core. Navigieren Sie auch einmal in den Ordner herein:
+
+    ```shell
+    cd ./scientia-htwk
+    ```
+
+4. **NodeJS-Abhängigkeiten installieren**
+
+    Navigieren Sie in den Unterordner `./server` und installieren Sie alle NodeJS-Abhängigkeiten mit folgenden Command:
+
+    ```shell
+    npm install
+    ```
+
+5. **Python-Abhängigkeiten installieren**
+
+    Navigieren Sie mit `cd ..` aus dem Ordner heraus und navigieren Sie dann in den Ordner `/scientia`.
+    Geben Sie dann folgendes ein, um ein Virtual-Environment zu erstellen:
+
+    ```shell
+    python -m venv ./.venv
+    ```
+
+    Gefolgt vom Folgenden um alle Python-Abhängigkeiten zu installieren (*Kann je nach Internetconnection ne weile dauern. Hat man Zeit sich nen Kaffee zu machen*):
+
+    ```shell
+    ./.venv/bin/pip install -r requirements.txt
+    ```
+
+6. **KI herunterladen**
+    Navigieren Sie aus dem jetzigen Ordner heraus.
+    Auf Linux ist das Problem, dass Sie beim aufrufen der Datei `./sce.bat` einen Fehler bekommen, da der Datei Berechtigungen fehlen. Weil Sie aber nicht immer `sudo bash ./sce.bat ...` benutzen wollen geben Sie einmal ein:
+
+    ```shell
+    chmod +x sce.bat
+    chmod +x server.bat
+    ```
+
+    und geben Sie ein:
+
+    ```shell
+    ./sce.bat download
+    ```
+
+    Jetzt werden zwei KI-Modelle (wie oben beschrieben) heruntergeladen. Warten Sie, dies kann je nach Internetconnection bis zu einer halben Stunde oder mehr an Zeit in anspruch nehmen. Brechen Sie den Vorgang nicht ab und lassen Sie ihren Computer an!
+
+    Testen Sie mit:
+
+    ```shell
+    ./sce.bat test
+    ```
+
+    ... Warten Sie und sprechen Sie (wenn alles funktioniert hat mit den Chatbot). Das sieht in etwa so aus (wenn Sie fertig sind geben Sie `exit` ein):
+
+    ```shell
+    kolumbus713@Peters-PC:~/projects/scientia-htwk$ ./sce.bat test
+    Loading checkpoint shards: 100%|██████████████████████████████████████████████████████████| 3/3 [00:04<00:00,  1.56s/it]
+    > Hallo!
+    Hallo! 😊
+    Ich bin Scientia, dein KI-Tutor an der HTWK-Leipzig. Wie kann ich dir heute helfen?
+    ```
+
+7. **Server starten**
+
+    Tippen Sie folgenden Befehl ein:
+
+    ```shell
+    ./server.bat
+    ```
+
+    Warten Sie, bis alles gestartet ist und versuchen Sie sich im Browser auf dem selben Gerät mit der Website `http://localhost:3000` zu verbinden. Falls Sie wie es auf Servern üblich ist keinen Browser haben tippen Sie folgenden Befehl ein:
+
+    ```shell
+    curl http://localhost:3000
+    ```
+
+    Falls Sie eine HTML-Struktur bekommen ist es geglückt. Der Server läuft. Pravo!
